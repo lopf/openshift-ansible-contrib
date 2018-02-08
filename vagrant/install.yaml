@@ -28,6 +28,16 @@
       regexp: '^(127\.0\.0\.1\s*)\S*\.example\.com (.*)'
       replace: '\1\2'
 
+- name: Install PyYAML
+  hosts: all
+  tasks:
+  - package:
+      name: "{{ item }}"
+      state: present
+    with_items:
+    - PyYAML
+    - python-ipaddress
+
 - name: Configure ssh keys
   hosts: admin1
   tasks:

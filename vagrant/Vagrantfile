@@ -4,8 +4,9 @@
 require 'socket'
 
 hostname = Socket.gethostname
-localmachineip = IPSocket.getaddress(Socket.gethostname)
-puts %Q{ This machine has the IP '#{localmachineip} and host name '#{hostname}'}
+# doesn't work on macOS
+#localmachineip = IPSocket.getaddress(Socket.gethostname)
+#puts %Q{ This machine has the IP '#{localmachineip} and host name '#{hostname}'}
 
 # Vagrantfile API/syntax version. Don't touch unless you know what you're doing!
 VAGRANTFILE_API_VERSION = '2'
@@ -147,7 +148,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     if deployment_type == 'openshift-enterprise'
       config_playbook = "/usr/share/ansible/openshift-ansible/playbooks/byo/config.yml"
     else
-      config_playbook = "/home/vagrant/openshift-ansible/playbooks/byo/config.yml"
+      config_playbook = "/home/vagrant/openshift-ansible/playbooks/byo/openshift_facts.yml"
     end
 
     admin1.vm.synced_folder "..", "/home/vagrant/sync", type: sync_type
@@ -172,6 +173,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         openshift_hosted_registry_storage_nfs_directory: '/srv/nfs',
         openshift_hosted_registry_storage_volume_name: 'registry',
         openshift_hosted_registry_storage_volume_size: '2Gi',
+        openshift_disable_check: 'disk_availability,docker_storage,memory_availability',
         rhsm_user: "#{ENV.fetch('SUB_USERNAME', '')}",
         rhsm_password: "#{ENV.fetch('SUB_PASSWORD', '')}",
         rhsm_pool: rhsm_pool,
